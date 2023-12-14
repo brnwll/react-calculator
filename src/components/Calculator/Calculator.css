@@ -22,30 +22,3 @@
   background-color: #9ab3d6;
   box-shadow: 0 -2px 0 0 #4b5665;
 }
-
-.button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  height: 60px;
-  margin: 7px 5px;
-  border-radius: 12px;
-  color: rgb(66, 76, 98);
-  background: #dee4fa;
-  box-shadow: 0 4px 0 0 #a1aacf;
-}
-
-.operator {
-  background-color: #fbcc31;
-  box-shadow: 0 4px 0 0 #a88627;
-}
-
-.other {
-  background-color: #78c48f;
-  box-shadow: 0 4px 0 0 #4c8d6c;
-}
-
-#num0 {
-  grid-column: 1 / 3;
-}

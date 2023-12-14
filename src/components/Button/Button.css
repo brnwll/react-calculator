@@ -1,0 +1,27 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  height: 60px;
+  margin: 7px 5px;
+  border-radius: 12px;
+  color: rgb(66, 76, 98);
+  background: #dee4fa;
+  box-shadow: 0 4px 0 0 #a1aacf;
+  cursor: pointer;
+}
+
+.operator {
+  background-color: #fbcc31;
+  box-shadow: 0 4px 0 0 #a88627;
+}
+
+.function {
+  background-color: #78c48f;
+  box-shadow: 0 4px 0 0 #4c8d6c;
+}
+
+#btn0 {
+  grid-column: 1 / 3;
+}
