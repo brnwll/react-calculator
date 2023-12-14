@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Button.css";
 
-const Button = ({ buttonText, onButtonClick }) => {
+const Button = ({ buttonText, activeOperator, onButtonClick }) => {
+  const [active, setActive] = useState(false);
+
   // Construct the id for the button
   const getId = () => {
     switch (buttonText) {
@@ -26,16 +28,19 @@ const Button = ({ buttonText, onButtonClick }) => {
     }
   };
 
+  const handleMouseDown = () => setActive(true);
+  const handleMouseUp = () => setActive(false);
+
   // Construct the class name for the button
   // TODO: Refactor this method to avoid hardcoding the operators and functions
   const getClassName = () => {
     const operators = ["+", "-", "×", "÷", "="];
-    const functions = ["C", "+/-", "%"];
+    const functions = ["C", "⎌"];
     let className = operators.includes(buttonText) ? " operator" : "";
     className = functions.includes(buttonText)
       ? `${className} function`
       : className;
-    return "button" + className;
+    return `button ${className}${active ? " active" : ""}`;
   };
 
   const id = getId();
@@ -44,8 +49,10 @@ const Button = ({ buttonText, onButtonClick }) => {
     <button
       id={id}
       className={className}
-      onClick={onButtonClick}
       value={buttonText}
+      onClick={onButtonClick}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       {buttonText}
     </button>

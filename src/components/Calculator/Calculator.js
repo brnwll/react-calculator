@@ -3,12 +3,19 @@ import Button from "../Button/Button";
 import "./Calculator.css";
 
 const buttons = [
-  ["C", "+/-", "%", "+"],
+  ["C", "⎌", "+"],
   ["1", "2", "3", "-"],
   ["4", "5", "6", "×"],
   ["7", "8", "9", "÷"],
   ["0", ".", "="],
 ];
+
+const operators = {
+  "+": (x, y) => x + y,
+  "-": (x, y) => x - y,
+  "*": (x, y) => x * y,
+  "/": (x, y) => x / y,
+};
 
 const Calculator = () => {
   const [displayValue, setDisplayValue] = useState("");
@@ -22,6 +29,9 @@ const Calculator = () => {
     const handleKeyDown = (e) => {
       const { key } = e;
 
+      // A number is pressed
+      // Build term1 if no operator is set
+      // Build term2 if operator is set
       if (/\d/.test(key)) {
         // number 0 - 9 pressed
         if (!operator && !term2) {
@@ -35,10 +45,10 @@ const Calculator = () => {
         }
       }
 
+      // An operator is pressed
       if (["+", "-", "*", "/"].includes(key)) {
         // operator pressed
-        if (term1 && !operator && !term2) {
-          //setDisplayValue(displayValue + key);
+        if (term1 && !term2) {
           setOperator(key);
         }
       }
@@ -80,6 +90,7 @@ const Calculator = () => {
             <Button
               key={`${i}${j}`}
               buttonText={btn}
+              activeOperator={operator}
               onButtonClick={onButtonClick}
             />
           ))
