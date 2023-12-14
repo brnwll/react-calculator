@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 25px;
   height: 60px;
   margin: 7px 5px;
   border-radius: 12px;
@@ -10,6 +11,7 @@
   background: #dee4fa;
   box-shadow: 0 4px 0 0 #a1aacf;
   cursor: pointer;
+  border: none;
 }
 
 .operator {

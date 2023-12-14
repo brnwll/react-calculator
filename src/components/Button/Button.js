@@ -27,8 +27,9 @@ const Button = ({ buttonText, onButtonClick }) => {
   };
 
   // Construct the class name for the button
+  // TODO: Refactor this method to avoid hardcoding the operators and functions
   const getClassName = () => {
-    const operators = ["+", "-", "X", "/", "="];
+    const operators = ["+", "-", "×", "÷", "="];
     const functions = ["C", "+/-", "%"];
     let className = operators.includes(buttonText) ? " operator" : "";
     className = functions.includes(buttonText)
@@ -40,9 +41,14 @@ const Button = ({ buttonText, onButtonClick }) => {
   const id = getId();
   const className = getClassName();
   return (
-    <div id={id} className={className} onClick={onButtonClick}>
+    <button
+      id={id}
+      className={className}
+      onClick={onButtonClick}
+      value={buttonText}
+    >
       {buttonText}
-    </div>
+    </button>
   );
 };
 
