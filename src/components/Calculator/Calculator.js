@@ -53,7 +53,8 @@ const Calculator = () => {
     // TODO: Prevent leading zeros
     // TODO: Clear display after equals is clicked and then a number is clicked
     //       This will require another state slice to monitor when equals is clicked
-    const { term, setTerm } = getCurrentTermAndSetter();
+    let { term, setTerm } = getCurrentTermAndSetter();
+    if (term === "0") term = ""; // prevent leading zeros
     const updatedTerm = term ? term + number : number;
     setTerm(updatedTerm);
     setDisplayValue(updatedTerm);
