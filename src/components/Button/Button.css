@@ -31,10 +31,6 @@
   box-shadow: 0 3px 0 0 #4c8d6c;
 }
 
-#btnClear {
-  grid-column: 1 / 3;
-}
-
-#btn0 {
+.btn0 {
   grid-column: 1 / 3;
 }
