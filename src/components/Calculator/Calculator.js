@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Display from "../Display/Display";
 import Button from "../Button/Button";
 import "./Calculator.css";
 
@@ -17,11 +18,22 @@ const operators = {
   [buttons[3][3]]: (x, y) => x / y, // ÷
 };
 
+const initialBreadcrumbState = {
+  term1: "",
+  operator: "",
+  term2: "",
+  fullExpression: "",
+};
+
 const Calculator = () => {
-  const [displayValue, setDisplayValue] = useState("");
+  const [display, setDisplay] = useState("");
+  const [breadcrumbs, setBreadcrumbs] = useState(initialBreadcrumbState);
   const [term1, setTerm1] = useState("");
   const [operator, setOperator] = useState("");
   const [term2, setTerm2] = useState("");
+
+  const [result, setResult] = useState("");
+
   // to clear display when a number is clicked after equals
   const [equalsClicked, setEqualsClicked] = useState(false);
 
@@ -31,7 +43,8 @@ const Calculator = () => {
   });
 
   function clearCalculator() {
-    setDisplayValue("");
+    setDisplay("");
+    setBreadcrumbs(initialBreadcrumbState);
     [setTerm1, setOperator, setTerm2].forEach((fn) => fn(""));
   }
 
@@ -39,19 +52,21 @@ const Calculator = () => {
     const { term, setTerm } = getCurrentTermAndSetter();
     const updatedTerm = term ? -1 * term : "";
     setTerm(updatedTerm);
-    setDisplayValue(updatedTerm);
+    setDisplay(updatedTerm);
   }
 
   function undo() {
-    if (term1 && operator && !term2) {
+    function undoOperator() {
       setOperator("");
-      setDisplayValue(term1);
-      return;
+      setDisplay(term1);
     }
-    const { term, setTerm } = getCurrentTermAndSetter();
-    const updatedTerm = String(term).slice(0, -1);
-    setTerm(updatedTerm);
-    setDisplayValue(updatedTerm);
+    function undoTerm() {
+      const { term, setTerm } = getCurrentTermAndSetter();
+      const updatedTerm = String(term).slice(0, -1);
+      setTerm(updatedTerm);
+      setDisplay(updatedTerm);
+    }
+    term1 && operator && !term2 ? undoOperator() : undoTerm();
   }
 
   function addNumberToCurrentTerm(number) {
@@ -60,10 +75,11 @@ const Calculator = () => {
     let updatedTerm = term ? term + number : number;
     if (equalsClicked) {
       updatedTerm = number;
+      //setBreadcrumbs(initialBreadcrumbState);
       setEqualsClicked(false);
     }
     setTerm(updatedTerm);
-    setDisplayValue(updatedTerm);
+    setDisplay(updatedTerm);
   }
 
   function addDecimalToCurrentTerm() {
@@ -72,22 +88,53 @@ const Calculator = () => {
     if (noDecimalsIn(term)) {
       const updatedTerm = term ? term + "." : "0.";
       setTerm(updatedTerm);
-      setDisplayValue(updatedTerm);
+      setDisplay(updatedTerm);
     }
   }
 
   function handleOperatorClick(operator) {
-    if (term1 && term2 && operator) handleEqualsClick();
-    if (term1) setOperator(operator);
+    // BUG: Breadcrumbs are a little off when chaining
+    //
+    //
+    //
+    //
+    //
+    //
+
+    if (term1 && term2 && operator) {
+      handleEqualsClick();
+      const fullExpression = `${term1} ${operator} ${term2} =`;
+      setBreadcrumbs({ ...initialBreadcrumbState, term1: fullExpression });
+    } else if (term1 && operator) {
+      setBreadcrumbs({
+        term1,
+        operator,
+        term2: "",
+        fullExpression: "",
+      });
+    }
+    if (term1) {
+      setOperator(operator);
+      /*
+      setBreadcrumbs({
+        term1,
+        operator,
+        term2: "",
+        fullExpression: "",
+      });
+      */
+    }
   }
 
   function handleEqualsClick() {
     if (term1 && term2 && operator) {
       const result = operators[operator](Number(term1), Number(term2));
+      const fullExpression = `${term1} ${operator} ${term2} =`;
+      setBreadcrumbs({ ...initialBreadcrumbState, fullExpression });
       setTerm1(result);
       setTerm2("");
       setOperator("");
-      setDisplayValue(result);
+      setDisplay(result);
       setEqualsClicked(true);
     }
   }
@@ -124,7 +171,7 @@ const Calculator = () => {
   return (
     <>
       <div id="calculator">
-        <div id="display">{displayValue}</div>
+        <Display display={display} breadcrumbs={breadcrumbs} />
         {buttons.map((row, i) =>
           row.map((btn, j) => (
             <Button
@@ -144,14 +191,13 @@ const Calculator = () => {
           ))
         )}
       </div>
-      {/* TODO: Delete the follow div once development is complete */}
-      <div>
-        <br />
-        <br />
-        <p>Term1: {term1}</p>
-        <p>Operator: {operator}</p>
-        <p>Term2: {term2}</p>
-      </div>
+
+      <br />
+      <br />
+      <br />
+      <div>Term 1: {term1}</div>
+      <div>Operator: {operator}</div>
+      <div>Term 2: {term2}</div>
     </>
   );
 };
