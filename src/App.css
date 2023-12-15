@@ -5,7 +5,6 @@
 header {
   background: rgb(6, 60, 101);
   color: white;
-  width: 100%;
   margin-bottom: 50px;
   padding: 10px;
   display: flex;
@@ -19,7 +18,7 @@ svg path {
 }
 
 header h1 {
-  margin-left: 20px;
+  margin-left: 10px;
   font-weight: bold;
 }
 
