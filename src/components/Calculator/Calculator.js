@@ -100,7 +100,7 @@ const Calculator = () => {
   function handleOperator(operator) {
     if (term1 && term2 && operator) {
       handleEquals();
-      const expression = `${term1}&nbsp;${operator}&nbsp;${term2}&nbsp;=`;
+      const expression = `${term1} ${operator} ${term2} =`;
       setBreadcrumbs({ ...initialBreadcrumbState, inProgress: expression });
     } else if (term1 && operator) {
       setBreadcrumbs({ inProgress: term1, operator, complete: "" });
