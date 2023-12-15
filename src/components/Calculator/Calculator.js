@@ -23,9 +23,9 @@ const operators = {
 };
 
 const initialBreadcrumbState = {
-  term1: "",
+  inProgress: "", // stores t1 or "t1 op t2 =" when chaining operations
   operator: "",
-  expression: "", // term1 + operator + term2 + "="
+  complete: "", // displays "t1 op t2 =" after '=' click
 };
 
 const Calculator = () => {
@@ -78,7 +78,7 @@ const Calculator = () => {
     if (term1 && operator && !term2) {
       setBreadcrumbs({
         ...initialBreadcrumbState,
-        term1: term1,
+        inProgress: term1,
         operator: operator,
       });
     }
@@ -104,9 +104,9 @@ const Calculator = () => {
     if (term1 && term2 && operator) {
       handleEquals();
       const expression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, term1: expression });
+      setBreadcrumbs({ ...initialBreadcrumbState, inProgress: expression });
     } else if (term1 && operator) {
-      setBreadcrumbs({ term1, operator, term2: "", expression: "" });
+      setBreadcrumbs({ inProgress: term1, operator, complete: "" });
     }
     if (term1) {
       setOperator(operator);
@@ -117,7 +117,7 @@ const Calculator = () => {
     if (term1 && term2 && operator) {
       const result = operators[operator](Number(term1), Number(term2));
       const expression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, expression });
+      setBreadcrumbs({ ...initialBreadcrumbState, complete: expression });
       setTerm1(result);
       setTerm2("");
       setOperator("");

@@ -23,16 +23,16 @@ const StateDashboard = ({ display, term1, operator, term2, breadcrumbs }) => {
       </div>
       <span>Breadcrumbs {"{...}"} </span>
       <div className="stateSlice">
-        <div>Term 1</div>
-        <div>{breadcrumbs.term1}</div>
+        <div>In Progress</div>
+        <div>{breadcrumbs.inProgress}</div>
       </div>
       <div className="stateSlice">
         <div>Operator</div>
         <div>{breadcrumbs.operator}</div>
       </div>
       <div className="stateSlice">
-        <div>Expression</div>
-        <div>{breadcrumbs.expression}</div>
+        <div>Complete</div>
+        <div>{breadcrumbs.complete}</div>
       </div>
     </div>
   );

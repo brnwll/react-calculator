@@ -2,12 +2,12 @@ import React from "react";
 import "./Display.css";
 
 const Display = ({ display, breadcrumbs }) => {
-  const { term1, operator, term2, expression } = breadcrumbs;
+  const { inProgress, operator, complete } = breadcrumbs;
   return (
     <div id="display">
       <div>
-        {expression}
-        {term1} {operator} {term2}
+        {complete}
+        {inProgress} {operator}
       </div>
       <div>{display}</div>
     </div>
