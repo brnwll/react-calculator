@@ -6,8 +6,6 @@ import "./Calculator.css";
 
 // TODO: Implement breadcrumbs to use toExpontential() on term1 and term2
 //       when they are too long to display in the display div.
-// TODO: Implement StateDashboard to use toExpontential() on term1 and term2
-//       when they are too long to display in the display div.
 
 const buttons = [
   ["C", "+/-", "%", "+"],
@@ -27,7 +25,6 @@ const operators = {
 const initialBreadcrumbState = {
   term1: "",
   operator: "",
-  term2: "",
   expression: "", // term1 + operator + term2 + "="
 };
 
@@ -181,6 +178,7 @@ const Calculator = () => {
         )}
       </div>
       <StateDashboard
+        display={display}
         term1={term1}
         operator={operator}
         term2={term2}
