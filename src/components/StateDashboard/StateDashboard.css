@@ -45,15 +45,3 @@
   border-radius: 5px;
   overflow: hidden;
 }
-
-#state-dashboard span {
-  border-top: 1px dotted rgb(83, 140, 197);
-  display: block;
-  text-align: left;
-  width: 100%;
-  margin-top: 15px;
-  padding-top: 15px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  font-style: italic;
-}

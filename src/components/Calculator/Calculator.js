@@ -19,15 +19,8 @@ const operators = {
   [buttons[3][3]]: (x, y) => x / y, // ÷
 };
 
-const initialBreadcrumbState = {
-  inProgress: "", // stores t1 or "t1 op t2 =" when chaining operations
-  operator: "",
-  complete: "", // displays "t1 op t2 =" after '=' click
-};
-
 const Calculator = () => {
   const [display, setDisplay] = useState("");
-  const [breadcrumbs, setBreadcrumbs] = useState(initialBreadcrumbState);
   const [term1, setTerm1] = useState("");
   const [operator, setOperator] = useState("");
   const [term2, setTerm2] = useState("");
@@ -45,7 +38,6 @@ const Calculator = () => {
       : value;
 
   function handleClear() {
-    setBreadcrumbs(initialBreadcrumbState);
     [setDisplay, setTerm1, setOperator, setTerm2].forEach((fn) => fn(""));
   }
 
@@ -69,15 +61,7 @@ const Calculator = () => {
     let updatedTerm = term ? term + number : number;
     if (clearOnNumberClick) {
       updatedTerm = number;
-      setBreadcrumbs(initialBreadcrumbState);
       setClearOnNumberClick(false);
-    }
-    if (term1 && operator && !term2) {
-      setBreadcrumbs({
-        ...initialBreadcrumbState,
-        inProgress: term1,
-        operator: operator,
-      });
     }
     setTerm(updatedTerm);
     setDisplay(toExponential(updatedTerm));
@@ -100,10 +84,6 @@ const Calculator = () => {
   function handleOperator(operator) {
     if (term1 && term2 && operator) {
       handleEquals();
-      const expression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, inProgress: expression });
-    } else if (term1 && operator) {
-      setBreadcrumbs({ inProgress: term1, operator, complete: "" });
     }
     if (term1) {
       setOperator(operator);
@@ -113,8 +93,6 @@ const Calculator = () => {
   function handleEquals() {
     if (term1 && term2 && operator) {
       const result = operators[operator](Number(term1), Number(term2));
-      const expression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, complete: expression });
       setTerm1(result);
       setTerm2("");
       setOperator("");
@@ -154,7 +132,7 @@ const Calculator = () => {
   return (
     <>
       <div id="calculator">
-        <Display display={display} breadcrumbs={breadcrumbs} />
+        <Display display={display} />
         {buttons.map((row, i) =>
           row.map((btn, j) => (
             <Button
@@ -179,7 +157,6 @@ const Calculator = () => {
         term1={term1}
         operator={operator}
         term2={term2}
-        breadcrumbs={breadcrumbs}
       />
     </>
   );

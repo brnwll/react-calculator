@@ -15,12 +15,6 @@
 }
 
 #display div:first-child {
-  color: #4b5665;
-  font-size: 12px;
-  min-height: 15px;
-}
-
-#display div:nth-child(2) {
   font-size: 30px;
-  min-height: 35px;
+  min-height: 34px;
 }

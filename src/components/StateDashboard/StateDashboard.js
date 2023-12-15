@@ -1,7 +1,7 @@
 import React from "react";
 import "./StateDashboard.css";
 
-const StateDashboard = ({ display, term1, operator, term2, breadcrumbs }) => {
+const StateDashboard = ({ display, term1, operator, term2 }) => {
   return (
     <div id="state-dashboard">
       <h2>State Dashboard</h2>
@@ -20,19 +20,6 @@ const StateDashboard = ({ display, term1, operator, term2, breadcrumbs }) => {
       <div className="stateSlice">
         <div>Term 2</div>
         <div>{term2}</div>
-      </div>
-      <span>Breadcrumbs {"{...}"} </span>
-      <div className="stateSlice">
-        <div>In Progress</div>
-        <div>{breadcrumbs.inProgress}</div>
-      </div>
-      <div className="stateSlice">
-        <div>Operator</div>
-        <div>{breadcrumbs.operator}</div>
-      </div>
-      <div className="stateSlice">
-        <div>Complete</div>
-        <div>{breadcrumbs.complete}</div>
       </div>
     </div>
   );
