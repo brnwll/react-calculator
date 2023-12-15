@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Display from "../Display/Display";
 import Button from "../Button/Button";
+import StateDashboard from "../StateDashboard/StateDashboard";
 import "./Calculator.css";
 
 // TODO: Implement breadcrumbs to use toExpontential() on term1 and term2
+//       when they are too long to display in the display div.
+// TODO: Implement StateDashboard to use toExpontential() on term1 and term2
 //       when they are too long to display in the display div.
 
 const buttons = [
@@ -177,14 +180,12 @@ const Calculator = () => {
           ))
         )}
       </div>
-
-      <br />
-      <br />
-      <br />
-      <div>Term 1: {term1}</div>
-      <div>Operator: {operator}</div>
-      <div>Term 2: {term2}</div>
-      <div>Display: {display}</div>
+      <StateDashboard
+        term1={term1}
+        operator={operator}
+        term2={term2}
+        breadcrumbs={breadcrumbs}
+      />
     </>
   );
 };
