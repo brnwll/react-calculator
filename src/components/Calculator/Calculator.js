@@ -4,9 +4,6 @@ import Button from "../Button/Button";
 import StateDashboard from "../StateDashboard/StateDashboard";
 import "./Calculator.css";
 
-// TODO: Implement breadcrumbs to use toExpontential() on term1 and term2
-//       when they are too long to display in the display div.
-
 const buttons = [
   ["C", "+/-", "%", "+"],
   ["1", "2", "3", "-"],
@@ -103,7 +100,7 @@ const Calculator = () => {
   function handleOperator(operator) {
     if (term1 && term2 && operator) {
       handleEquals();
-      const expression = `${term1} ${operator} ${term2} =`;
+      const expression = `${term1}&nbsp;${operator}&nbsp;${term2}&nbsp;=`;
       setBreadcrumbs({ ...initialBreadcrumbState, inProgress: expression });
     } else if (term1 && operator) {
       setBreadcrumbs({ inProgress: term1, operator, complete: "" });
