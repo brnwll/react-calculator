@@ -1,6 +1,30 @@
 .App {
-  padding-top: 75px;
   display: flex;
+}
+
+header {
+  background: rgb(6, 60, 101);
+  color: white;
+  width: 100%;
+  margin-bottom: 50px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px 0px 15px rgb(19, 36, 60);
+}
+
+svg path {
+  fill: white;
+}
+
+header h1 {
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+header a {
+  align-self: flex-end;
 }
 
 /* Styles for screens wider than 600px */
