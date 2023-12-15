@@ -11,10 +11,10 @@ const buttons = [
 ];
 
 const operators = {
-  [buttons[0][3]]: (x, y) => x + y,
-  [buttons[1][3]]: (x, y) => x - y,
-  [buttons[2][3]]: (x, y) => x * y,
-  [buttons[3][3]]: (x, y) => x / y,
+  [buttons[0][3]]: (x, y) => x + y, // +
+  [buttons[1][3]]: (x, y) => x - y, // -
+  [buttons[2][3]]: (x, y) => x * y, // x
+  [buttons[3][3]]: (x, y) => x / y, // ÷
 };
 
 const Calculator = () => {
@@ -22,6 +22,8 @@ const Calculator = () => {
   const [term1, setTerm1] = useState("");
   const [operator, setOperator] = useState("");
   const [term2, setTerm2] = useState("");
+  // to clear display when a number is clicked after equals
+  const [equalsClicked, setEqualsClicked] = useState(false);
 
   const getCurrentTermAndSetter = () => ({
     term: operator ? term2 : term1,
@@ -34,7 +36,6 @@ const Calculator = () => {
   }
 
   function negateCurrentTerm() {
-    // TODO: Bug fix. Click undo after equals
     const { term, setTerm } = getCurrentTermAndSetter();
     const updatedTerm = term ? -1 * term : "";
     setTerm(updatedTerm);
@@ -42,19 +43,25 @@ const Calculator = () => {
   }
 
   function undo() {
-    // TODO: Bug fix. Click undo after equals
+    if (term1 && operator && !term2) {
+      setOperator("");
+      setDisplayValue(term1);
+      return;
+    }
     const { term, setTerm } = getCurrentTermAndSetter();
-    const updatedTerm = term.slice(0, -1);
+    const updatedTerm = String(term).slice(0, -1);
     setTerm(updatedTerm);
     setDisplayValue(updatedTerm);
   }
 
   function addNumberToCurrentTerm(number) {
-    // TODO: Clear display after equals is clicked and then a number is clicked
-    //       This will require another state slice to monitor when equals is clicked
     let { term, setTerm } = getCurrentTermAndSetter();
     if (term === "0") term = ""; // prevent leading zeros
-    const updatedTerm = term ? term + number : number;
+    let updatedTerm = term ? term + number : number;
+    if (equalsClicked) {
+      updatedTerm = number;
+      setEqualsClicked(false);
+    }
     setTerm(updatedTerm);
     setDisplayValue(updatedTerm);
   }
@@ -81,26 +88,27 @@ const Calculator = () => {
       setTerm2("");
       setOperator("");
       setDisplayValue(result);
+      setEqualsClicked(true);
     }
   }
 
   const onButtonClick = (e) => {
     const { value } = e.target;
-    value === "C" && clearCalculator();
-    value === "+/-" && negateCurrentTerm();
-    value === "⎌" && undo();
-    value === "." && addDecimalToCurrentTerm();
-    value === "=" && handleEqualsClick();
+    value === buttons[0][0] && clearCalculator(); // clear
+    value === buttons[0][1] && negateCurrentTerm(); // negate
+    value === buttons[0][2] && undo(); // undo
+    value === buttons[4][1] && addDecimalToCurrentTerm(); // decimal
+    value === buttons[4][2] && handleEqualsClick();
     /\d/.test(value) && addNumberToCurrentTerm(value);
-    ["+", "-", "x", "÷"].includes(value) && handleOperatorClick(value);
+    Object.keys(operators).includes(value) && handleOperatorClick(value);
   };
 
   const normalizeKeyPress = (key) => {
-    if (key === "Escape" || key === "c") return "C"; // clear calculator
-    if (key === "Backspace") return "⎌"; // undo
-    if (key === "*") return "x"; // multiply
-    if (key === "/") return "÷"; // divide
-    if (key === "Enter") return "="; // equals
+    if (key === "Escape" || key === "c") return buttons[0][0]; // clear
+    if (key === "Backspace") return buttons[0][2]; // undo
+    if (key === "*") return buttons[2][3]; // multiply
+    if (key === "/") return buttons[3][3]; // divide
+    if (key === "Enter") return buttons[4][2]; // equals
     return key;
   };
 
