@@ -4,6 +4,7 @@ import "./Button.css";
 const Button = ({
   buttonText,
   onButtonClick,
+  activeOperator,
   functionButtonsArray,
   operatorButtonsArray,
 }) => {
@@ -20,6 +21,8 @@ const Button = ({
       ? `${className} function`
       : className;
     className = buttonText === "0" ? `${className} btn0` : className;
+    className =
+      activeOperator === buttonText ? `${className} activeOperator` : className;
     return `button ${className}${active ? " active" : ""}`;
   };
 

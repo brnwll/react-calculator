@@ -50,7 +50,6 @@ const Calculator = () => {
   }
 
   function addNumberToCurrentTerm(number) {
-    // TODO: Prevent leading zeros
     // TODO: Clear display after equals is clicked and then a number is clicked
     //       This will require another state slice to monitor when equals is clicked
     let { term, setTerm } = getCurrentTermAndSetter();
@@ -72,7 +71,7 @@ const Calculator = () => {
 
   function handleOperatorClick(operator) {
     if (term1 && term2 && operator) handleEqualsClick();
-    setOperator(operator);
+    if (term1) setOperator(operator);
   }
 
   function handleEqualsClick() {
@@ -123,6 +122,7 @@ const Calculator = () => {
             <Button
               key={`${i}${j}`}
               buttonText={btn}
+              activeOperator={operator && !term2 ? operator : ""}
               operatorButtonsArray={Object.keys(operators).concat(
                 buttons[4][2]
               )}
