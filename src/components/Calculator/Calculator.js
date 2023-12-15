@@ -3,8 +3,11 @@ import Display from "../Display/Display";
 import Button from "../Button/Button";
 import "./Calculator.css";
 
+// TODO: Implement breadcrumbs to use toExpontential() on term1 and term2
+//       when they are too long to display in the display div.
+
 const buttons = [
-  ["C", "+/-", "⎌", "+"],
+  ["C", "+/-", "%", "+"],
   ["1", "2", "3", "-"],
   ["4", "5", "6", "x"],
   ["7", "8", "9", "÷"],
@@ -22,7 +25,7 @@ const initialBreadcrumbState = {
   term1: "",
   operator: "",
   term2: "",
-  fullExpression: "",
+  expression: "", // term1 + operator + term2 + "="
 };
 
 const Calculator = () => {
@@ -31,128 +34,111 @@ const Calculator = () => {
   const [term1, setTerm1] = useState("");
   const [operator, setOperator] = useState("");
   const [term2, setTerm2] = useState("");
+  // ↓ Tracks: '=' click. Clear calculator if subsequent click is on number
+  const [clearOnNumberClick, setClearOnNumberClick] = useState(false);
 
-  const [result, setResult] = useState("");
-
-  // to clear display when a number is clicked after equals
-  const [equalsClicked, setEqualsClicked] = useState(false);
-
-  const getCurrentTermAndSetter = () => ({
+  const getActiveTermAndSetter = () => ({
     term: operator ? term2 : term1,
     setTerm: operator ? setTerm2 : setTerm1,
   });
 
-  function clearCalculator() {
-    setDisplay("");
+  const toExponential = (value, threshold = 12, expLength = 8) =>
+    String(value).length > threshold
+      ? Number.parseFloat(value).toExponential(expLength)
+      : value;
+
+  function handleClear() {
     setBreadcrumbs(initialBreadcrumbState);
-    [setTerm1, setOperator, setTerm2].forEach((fn) => fn(""));
+    [setDisplay, setTerm1, setOperator, setTerm2].forEach((fn) => fn(""));
   }
 
-  function negateCurrentTerm() {
-    const { term, setTerm } = getCurrentTermAndSetter();
+  function handleNegate() {
+    const { term, setTerm } = getActiveTermAndSetter();
     const updatedTerm = term ? -1 * term : "";
     setTerm(updatedTerm);
-    setDisplay(updatedTerm);
+    setDisplay(toExponential(updatedTerm));
   }
 
-  function undo() {
-    function undoOperator() {
-      setOperator("");
-      setDisplay(term1);
-    }
-    function undoTerm() {
-      const { term, setTerm } = getCurrentTermAndSetter();
-      const updatedTerm = String(term).slice(0, -1);
-      setTerm(updatedTerm);
-      setDisplay(updatedTerm);
-    }
-    term1 && operator && !term2 ? undoOperator() : undoTerm();
+  function handlePercent() {
+    const { term, setTerm } = getActiveTermAndSetter();
+    const updatedTerm = term ? term / 100 : "";
+    setTerm(updatedTerm);
+    setDisplay(toExponential(updatedTerm));
   }
 
-  function addNumberToCurrentTerm(number) {
-    let { term, setTerm } = getCurrentTermAndSetter();
-    if (term === "0") term = ""; // prevent leading zeros
+  function handleNumber(number) {
+    let { term, setTerm } = getActiveTermAndSetter();
+    term = term === "0" ? "" : term; // prevent leading zeros
     let updatedTerm = term ? term + number : number;
-    if (equalsClicked) {
+    if (clearOnNumberClick) {
       updatedTerm = number;
-      //setBreadcrumbs(initialBreadcrumbState);
-      setEqualsClicked(false);
+      setBreadcrumbs(initialBreadcrumbState);
+      setClearOnNumberClick(false);
+    }
+    if (term1 && operator && !term2) {
+      setBreadcrumbs({
+        ...initialBreadcrumbState,
+        term1: term1,
+        operator: operator,
+      });
     }
     setTerm(updatedTerm);
-    setDisplay(updatedTerm);
+    setDisplay(toExponential(updatedTerm));
   }
 
-  function addDecimalToCurrentTerm() {
-    const { term, setTerm } = getCurrentTermAndSetter();
-    const noDecimalsIn = (term) => !term.includes(".");
-    if (noDecimalsIn(term)) {
+  function handleDecimal() {
+    const { term, setTerm } = getActiveTermAndSetter();
+    if (clearOnNumberClick) {
+      setTerm("0.");
+      setDisplay("0.");
+      setClearOnNumberClick(false);
+    } else if (!String(term).includes(".")) {
+      // prevent multiple decimals
       const updatedTerm = term ? term + "." : "0.";
       setTerm(updatedTerm);
-      setDisplay(updatedTerm);
+      setDisplay(toExponential(updatedTerm));
     }
   }
 
-  function handleOperatorClick(operator) {
-    // BUG: Breadcrumbs are a little off when chaining
-    //
-    //
-    //
-    //
-    //
-    //
-
+  function handleOperator(operator) {
     if (term1 && term2 && operator) {
-      handleEqualsClick();
-      const fullExpression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, term1: fullExpression });
+      handleEquals();
+      const expression = `${term1} ${operator} ${term2} =`;
+      setBreadcrumbs({ ...initialBreadcrumbState, term1: expression });
     } else if (term1 && operator) {
-      setBreadcrumbs({
-        term1,
-        operator,
-        term2: "",
-        fullExpression: "",
-      });
+      setBreadcrumbs({ term1, operator, term2: "", expression: "" });
     }
     if (term1) {
       setOperator(operator);
-      /*
-      setBreadcrumbs({
-        term1,
-        operator,
-        term2: "",
-        fullExpression: "",
-      });
-      */
     }
   }
 
-  function handleEqualsClick() {
+  function handleEquals() {
     if (term1 && term2 && operator) {
       const result = operators[operator](Number(term1), Number(term2));
-      const fullExpression = `${term1} ${operator} ${term2} =`;
-      setBreadcrumbs({ ...initialBreadcrumbState, fullExpression });
+      const expression = `${term1} ${operator} ${term2} =`;
+      setBreadcrumbs({ ...initialBreadcrumbState, expression });
       setTerm1(result);
       setTerm2("");
       setOperator("");
-      setDisplay(result);
-      setEqualsClicked(true);
+      setDisplay(toExponential(result));
+      setClearOnNumberClick(true);
     }
   }
 
-  const onButtonClick = (e) => {
-    const { value } = e.target;
-    value === buttons[0][0] && clearCalculator(); // clear
-    value === buttons[0][1] && negateCurrentTerm(); // negate
-    value === buttons[0][2] && undo(); // undo
-    value === buttons[4][1] && addDecimalToCurrentTerm(); // decimal
-    value === buttons[4][2] && handleEqualsClick();
-    /\d/.test(value) && addNumberToCurrentTerm(value);
-    Object.keys(operators).includes(value) && handleOperatorClick(value);
+  const handleButtonClick = ({ target: { value } }) => {
+    value === buttons[0][0] && handleClear(); // C
+    value === buttons[0][1] && handleNegate(); // +/-
+    value === buttons[0][2] && handlePercent(); // %
+    value === buttons[4][1] && handleDecimal(); // .
+    value === buttons[4][2] && handleEquals(); // =
+    /\d/.test(value) && handleNumber(value); // 0-9
+    Object.keys(operators).includes(value) && handleOperator(value); // + - x ÷
   };
 
   const normalizeKeyPress = (key) => {
-    if (key === "Escape" || key === "c") return buttons[0][0]; // clear
-    if (key === "Backspace") return buttons[0][2]; // undo
+    if (key === "Escape") return buttons[0][0]; // clear
+    if (key === "%") return buttons[0][2]; // handlePercent
     if (key === "*") return buttons[2][3]; // multiply
     if (key === "/") return buttons[3][3]; // divide
     if (key === "Enter") return buttons[4][2]; // equals
@@ -160,7 +146,7 @@ const Calculator = () => {
   };
 
   const handleKeyDown = ({ key }) => {
-    onButtonClick({ target: { value: normalizeKeyPress(key) } });
+    handleButtonClick({ target: { value: normalizeKeyPress(key) } });
   };
 
   useEffect(() => {
@@ -186,7 +172,7 @@ const Calculator = () => {
                 buttons[0][1],
                 buttons[0][2],
               ]}
-              onButtonClick={onButtonClick}
+              handleButtonClick={handleButtonClick}
             />
           ))
         )}
@@ -198,6 +184,7 @@ const Calculator = () => {
       <div>Term 1: {term1}</div>
       <div>Operator: {operator}</div>
       <div>Term 2: {term2}</div>
+      <div>Display: {display}</div>
     </>
   );
 };

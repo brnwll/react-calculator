@@ -3,7 +3,7 @@ import "./Button.css";
 
 const Button = ({
   buttonText,
-  onButtonClick,
+  handleButtonClick,
   activeOperator,
   functionButtonsArray,
   operatorButtonsArray,
@@ -30,7 +30,7 @@ const Button = ({
     <button
       className={getClassName()}
       value={buttonText}
-      onClick={onButtonClick}
+      onClick={handleButtonClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
